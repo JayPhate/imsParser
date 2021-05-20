@@ -1,0 +1,12 @@
+Urea
+Creatinine
+Sodium
+Potassium
+Serum L D H
+Lactate
+A L T
+Troponin T
+X-Ray Chest
+Haematologic test results
+
+

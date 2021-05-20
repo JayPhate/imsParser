@@ -1,0 +1,17 @@
+Urea
+Creatinine
+Sodium
+Potassium
+Serum L D H
+Lactate
+A L T
+Troponin T
+Glucose Random
+Ferritin
+D-Dimer
+P C T
+Liver Panel
+Hs-Crp
+A B G (Blood Gas Analysis)
+X-Ray Chest
+Haematologic test results
