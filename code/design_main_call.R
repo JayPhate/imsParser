@@ -1,5 +1,40 @@
 options(stringsAsFactors = FALSE)
 
+#cat(paste("#### File No:", x, "==>", all_files[x] ,"####"), sep = "\n", file = "Processed Files.txt", append = TRUE)
+
+get_HaematologicTestResults1 <- function(records, pattern){
+  idxs <- grep(pattern, records)    
+  matched_part <- trim(records[idxs])
+  
+  val_n_dt = ""
+  
+  if(length(idxs)==1){
+    counter = 2
+    res = NULL
+    while(!grepl("^[a-zA-Z].*", records[idxs + counter])) {
+      res <- c(res, records[idxs + counter])
+      counter = counter + 1
+    }
+    
+    dts <- paste(trim(sapply(strsplit(res, "\t"),'[', 1)), sep = "|", collapse = "|")
+    HB <- paste(trim(sapply(strsplit(res, "\t"),'[', 2)), sep = "|", collapse = "|")
+    RBC <- paste(trim(sapply(strsplit(res, "\t"),'[', 3)), sep = "|", collapse = "|")
+    WBC <- paste(trim(sapply(strsplit(res, "\t"),'[', 4)), sep = "|", collapse = "|")
+    PLT <- paste(trim(sapply(strsplit(res, "\t"),'[', 5)), sep = "|", collapse = "|")
+    PCV <- paste(trim(sapply(strsplit(res, "\t"),'[', 6)), sep = "|", collapse = "|")
+    MCV <- paste(trim(sapply(strsplit(res, "\t"),'[', 7)), sep = "|", collapse = "|")
+    RDW_cv <- paste(trim(sapply(strsplit(res, "\t"),'[', 8)), sep = "|", collapse = "|")
+    LY <- paste(trim(sapply(strsplit(res, "\t"),'[', 9)), sep = "|", collapse = "|")
+    Mixed <- paste(trim(sapply(strsplit(res, "\t"),'[', 10)), sep = "|", collapse = "|")
+    GR <- paste(trim(sapply(strsplit(res, "\t"),'[', 11)), sep = "|", collapse = "|")
+    
+    vals <- c(HB, RBC, WBC, PLT, PCV, MCV, RDW_cv, LY, Mixed, GR)
+    val_n_dt <- c(vals, dts)
+  }
+  
+  return(val_n_dt)
+}
+
 fetch_attributes <- function(basic_att, 
                              basic_details, 
                              clinical_fields,
@@ -10,6 +45,9 @@ fetch_attributes <- function(basic_att,
   all_files <- list.files(root_files_path)
   
   for (x in 1:length(all_files)){
+    #cat("#### File No:", x, "####\n")
+    
+    cat(paste("#### File No:", x, "==>", all_files[x] ,"####"), sep = "\n", file = "Processed Files.txt", append = TRUE)
     
     file_data <- read.csv(paste( c(root_files_path, "\\", all_files[x]), collapse=""), sep = "\n", header=F)
     #print(all_files[x])
@@ -142,7 +180,7 @@ fetch_attributes <- function(basic_att,
       }else if(clinical_fields[a] == "X-Ray Chest"){
         x_rays = get_X_ray_report(file_data$V1, clinical_fields[a])
         x_rays = paste(x_rays, collapse = "|")
-        clinical_row = c(clinical_row, x_rays, "")
+        clinical_row = c(clinical_row, x_rays)
       }
       else {
         Haematologic_row = c(Haematologic_row, rep("", length(Haematologic_test_cols))) 

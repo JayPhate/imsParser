@@ -4,9 +4,6 @@ trim <- function (x) gsub("^\\s+|\\s+$", "", x)
 
 get_vals_dts <- function(records, position){
   
-  if(length(position)>1){
-    print(records[position])
-  }
   
   total_elements <- trim(unlist(strsplit(records[position+1], "\t")))
   
@@ -90,7 +87,7 @@ get_HaematologicTestResults <- function(records, pattern){
   if(length(idxs)==1){
     counter = 2
     res = NULL
-    while(!grepl("^[a-zA-Z].*", records[idxs + counter])) {
+    while( (!grepl("^[a-zA-Z].*", records[idxs + counter])) && (idxs + counter) <= length(records)) {
       res <- c(res, records[idxs + counter])
       counter = counter + 1
     }
@@ -157,7 +154,7 @@ get_X_ray_report <- function(records, pattern){
   pos <- grep(pattern, records)
   last_elment = length(records)
   
-  impressions = ""
+  impressions = NULL
   if (length(pos) > 0 ){
     for(p in 1:length(pos)){
       
@@ -170,6 +167,8 @@ get_X_ray_report <- function(records, pattern){
         if(length(pointer_pos) >= 1 ){
           check = TRUE
           start = pos[p] + pointer_pos[1] - 1
+          reported_by_counter = 1
+          
           while (check) {
             m = grep("Reported By", records[start])
             if(length(m) >= 1 ){
@@ -177,6 +176,14 @@ get_X_ray_report <- function(records, pattern){
             }
             str_to_match = paste(str_to_match, records[start], sep=" ", collapse = "")
             start = start + 1
+            
+            
+            if (reported_by_counter>=15){
+              check = FALSE
+              #str_to_match = "X-Ray details not found"
+              
+            }
+            reported_by_counter = reported_by_counter + 1
           }
         }
         
@@ -239,7 +246,9 @@ get_HS_Crp <- function(records, pattern){
   if (length(part1) > 0){
     counter = 1
     r = NULL
-    while(!grepl("^[a-zA-Z].*", records[idxs + counter])) {
+    # !grepl("^[a-zA-Z].*", records[idxs + counter]) && (idxs + counter) <= length(records)
+    #while(!grepl("^[a-zA-Z].*", records[idxs + counter])) {
+    while( !grepl("^[a-zA-Z].*", records[idxs + counter]) && (idxs + counter) ) {
       r <- c(r, records[idxs + counter])
       counter = counter + 1
     }
@@ -265,7 +274,11 @@ get_BloodGasAnalysis <- function(records, pattern){
   if (length(part1) > 0){
     counter = 1
     r = NULL
-    while(!grepl("^[a-zA-Z].*", records[idxs + counter])) {
+    
+    # !grepl("^[a-zA-Z].*", records[idxs + counter]) && (idxs + counter) <= length(records)
+    #while(!grepl("^[a-zA-Z].*", records[idxs + counter])) {
+    
+    while( (!grepl("^[a-zA-Z].*", records[idxs + counter])) && (idxs + counter) <= length(records) ) {
       r <- c(r, records[idxs + counter])
       counter = counter + 1
     }
